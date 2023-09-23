@@ -1,4 +1,18 @@
+
+
+
+
+
+-- Datos de la empresa
+nombreEmpresa = "Bicicletas Alquiler Brenes y Asociados"
+sitioWeb = "bicisbrenesasoc.com"
+contacto = "25554888"
+tarifaPedal = 400
+tarifaElectrico = 700
+
+
 -- Seccion de vistas 
+
 
 vistaMenuInicial = do
     putStrLn "\n\n \tBienvenido"
@@ -104,3 +118,4 @@ main = do
                 main
 
 
+ 
