@@ -1,3 +1,0 @@
-B001,TR,Parque1
-B002,AE,Parque2
-B003,TR,Parque1
