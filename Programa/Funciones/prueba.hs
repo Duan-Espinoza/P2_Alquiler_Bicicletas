@@ -10,20 +10,38 @@ data Parqueo = Parqueo IdParqueo NombreParqueo DireccionParqueo ProvinciaParqueo
 creaParqueo :: [String] -> Parqueo
 creaParqueo elemento = Parqueo (read (elemento !! 0) :: Integer) (elemento !! 1) (elemento !! 2) (elemento !! 3)(read (elemento !! 4) :: Float) (read (elemento !! 5) :: Float)
 
+-- Metodos Accesores
 getId :: Parqueo -> IdParqueo
 getId (Parqueo id _ _ _ _ _) = id
+getNombreParqueo :: Parqueo -> NombreParqueo
+getNombreParqueo (Parqueo _ nombre _ _ _ _) = nombre
+getDireccionParqueo :: Parqueo -> DireccionParqueo
+getDireccionParqueo (Parqueo _ _ direccion _ _ _) = direccion
+geProvincia :: Parqueo -> ProvinciaParqueo
+geProvincia(Parqueo _ _ _ provincia _ _) = provincia
+getCordenadaX :: Parqueo -> CordenadaX
+getCordenadaX(Parqueo _ _ _ _ cordenada _ ) = cordenada
+getCordenadY :: Parqueo -> CordenadaY
+getCordenadY(Parqueo _ _ _ _ _ cordenadaY ) = cordenadaY
 
 showParqueo parqueo = 
     let 
         id = getId(parqueo)
+        nombre = getNombreParqueo(parqueo)
+        direccion = getDireccionParqueo(parqueo)
+        provincia = geProvincia(parqueo)
+        cordenadaX = getCordenadaX(parqueo)
+        cordenadaY = getCordenadY(parqueo)
+
     in
-        "Parqueo" ++ show id  
+        "El id es: " ++ show id  ++ ", nombre del Parque: "++ nombre ++ ", su direccion es: " ++ direccion ++ ", provincia: " ++ provincia ++ ", coordenada X: "++ show cordenadaX ++ ", coordenada Y: " ++ show  cordenadaY
 
 showParqueos [] = print("")
 showParqueos lista = 
     do 
         print(showParqueo(head lista))
         showParqueos(tail lista)
+
 
 existeID parqueos = 
     do 
@@ -66,21 +84,10 @@ leerArchivo archivo = do
     let parqueos = separaElementos(convierteALineas contenido)
     return parqueos
 
-menuAux(opcion, parqueos, persona2) = 
-    if opcion == 6 then 
-        print "bye"
-    else
-        case opcion of 
-            1 -> showParqueos parqueos
-
-menu = do
-    putStrLn "indique ruta de parqueos 1"
-    ruta <- getLine
-    putStrLn  "Indique la ruta de parqueos 2"
-    parqueos <- leerArchivo ruta
-    ruta2 <- getLine
-    parqueos2 <- leerArchivo ruta2
-    temp <- menuAux (1,parqueos,parqueos2)
-    return temp
-
-
+main :: IO ()
+main = do
+    putStrLn "Indique la ruta del archivo de parqueos:"
+    filePath <- getLine
+    parqueos <- leerArchivo filePath
+    putStrLn "Parqueos cargados:"
+    showParqueos parqueos
