@@ -69,12 +69,21 @@ mostrarInfoUsuario (usuario:restoUsuarios) cedula = do
 crearListaUsuarios :: [[String]] -> [Usuario]
 crearListaUsuarios = map crearUsuario
 
+--Crea una lista de usuarios
+--E: una lista con listas de strings
+--S: una lista de usuarios
+separaUsuarios :: [[Char]] -> [Usuario]
+separaUsuarios lista =
+    if null lista then []
+    else
+        crearUsuario (separaPorComas (head lista, "")) : separaUsuarios (tail lista)
 
--- Lee un archivo de usuarios
--- Entrada: la ruta del archivo
--- Salida: una lista de usuarios
+
+--lee un archivo de usuarios
+--E: la ruta del archivo
+--S: retorna una lista de usuarios
 leerArchivoUsuarios :: FilePath -> IO [Usuario]
 leerArchivoUsuarios archivo = do
     contenido <- readFile archivo
-    let usuarios = separaUsuarios (lines contenido) -- Convierte las líneas del archivo en una lista de usuarios
+    let usuarios = separaUsuarios (lines contenido)
     return usuarios
