@@ -1,0 +1,15 @@
+B001,TR,Parqueo A
+B002,AE,Parqueo F
+B003,AG,Parqueo C
+B004,TR,Parqueo D
+B005,AE,Parqueo E
+B006,AG,Parqueo B
+B007,TR,Parqueo G
+B008,AE,Parqueo H
+B009,AG,Parqueo I
+B0010,TR,Parqueo J
+B0011,AE,Parqueo K
+B0012,AG,Parqueo L
+B0013,TR,Parqueo M
+B0014,AE,Parqueo N
+B0015,AG,Parqueo O

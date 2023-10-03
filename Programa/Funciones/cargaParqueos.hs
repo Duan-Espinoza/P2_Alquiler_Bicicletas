@@ -1,5 +1,5 @@
 module CargaParqueos where
-import System.Directory  --Libreria para verificacion de rutas
+import System.Directory ( doesPathExist )  --Libreria para verificacion de rutas
 import Data.List (isInfixOf) --Libreria para validacion de las provincias 
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -17,6 +17,15 @@ type CordenadaX = Float
 type CordenadaY = Float
 
 data Parqueo = Parqueo IdParqueo NombreParqueo DireccionParqueo ProvinciaParqueo CordenadaX CordenadaY
+
+instance Show Parqueo where
+    show (Parqueo id nombre direccion provincia x y) =
+        "Id: " ++ show id ++
+        ", Nombre: " ++ nombre ++
+        ", Dirección: " ++ direccion ++
+        ", Provincia: " ++ provincia ++
+        ", Coordenada X: " ++ show x ++
+        ", Coordenada Y: " ++ show y
 
 -- Funcion que crea archivo con direccion 
 creaArchivo = do 
@@ -171,7 +180,9 @@ existeID parqueos =
         let id = (read tempId :: Integer)
         existeIdAux(parqueos, id) 
 
+existeIdAux :: ([a], b) -> IO ()
 existeIdAux ([],cedula) = print ("no encontrado")
+
 existeParqueoAux(parqueos, id) = do 
     let primero = (head parqueos)
     let idNew = getId(primero)
@@ -206,3 +217,29 @@ leerArchivo archivo = do
     return parqueos
 
 
+
+
+----------------------------------------------------------------
+
+
+-- Función auxiliar para verificar si existe un parqueo con un nombre dado en la lista de parqueos
+existeNombreAux :: [Parqueo] -> NombreParqueo -> Bool
+existeNombreAux [] _ = False
+existeNombreAux ((Parqueo _ nombre _ _ _ _):parqueosRestantes) targetNombre
+    | nombre == targetNombre = True
+    | otherwise = existeNombreAux parqueosRestantes targetNombre
+
+-- Función principal para verificar la existencia de un parqueo por nombre
+existeNombre :: [Parqueo] -> IO ()
+existeNombre parqueos = do
+    putStrLn "Indique un nombre de parqueo:"
+    targetNombre <- getLine
+    if existeNombreAux parqueos targetNombre
+        then putStrLn "Parqueo encontrado en la lista."
+        else putStrLn "Parqueo no encontrado en la lista."
+
+consultaNombreParqueo :: IO ()
+consultaNombreParqueo = do
+    let direccion = "../Data App/infoParqueos.txt" --Direccion donde se almacena la base de datos de los parqueos
+    parqueos <- leerArchivo direccion
+    existeNombre parqueos  

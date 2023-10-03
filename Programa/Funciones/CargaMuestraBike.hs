@@ -4,6 +4,7 @@ import System.IO
 import qualified Control.Monad
 
 
+
 -- Estructura bicicletas
 type CodigoBicicleta = String
 type TipoBicicleta = String
@@ -20,6 +21,9 @@ data Bicicleta = Bicicleta {
 -- Constructor bicicletas
 crearBicicleta :: CodigoBicicleta -> TipoBicicleta -> UbicacionBicicleta -> Bicicleta
 crearBicicleta codigo tipo ubicacion = Bicicleta codigo tipo ubicacion False
+
+-- para lectura txt 
+crearBicicletatxt elemento = Bicicleta (elemento !! 0) (elemento !! 1) (elemento !! 2) (read (elemento !! 3) :: Bool) 
 
 
 getCodigo :: Bicicleta -> CodigoBicicleta
@@ -46,7 +50,7 @@ mostrarBicicleta bicicleta = do
     let codigo = codigoBicicleta bicicleta
         tipo = tipoBicicleta bicicleta
         ubicacion = ubicacionBicicleta bicicleta
-    putStrLn $ "Código de Bicicleta: " ++ codigo
+    putStrLn $ "\nCódigo de Bicicleta: " ++ codigo
     putStrLn $ "Tipo de Bicicleta: " ++ tipo
     putStrLn $ "Ubicación de Bicicleta: " ++ ubicacion
 
@@ -63,7 +67,7 @@ mostrarBiciParqueo bicicleta nombreParqueo = do
         tipo = tipoBicicleta bicicleta
         ubicacion = ubicacionBicicleta bicicleta
     Control.Monad.when (ubicacion == nombreParqueo) $ do
-            putStrLn $ "Código de Bicicleta: " ++ codigo
+            putStrLn $ "\nCódigo de Bicicleta: " ++ codigo
             putStrLn $ "Tipo de Bicicleta: " ++ tipo
             putStrLn $ "Ubicación de Bicicleta: " ++ ubicacion
 
@@ -196,3 +200,36 @@ escribirNuevosDatos :: String -> String -> IO ()
 escribirNuevosDatos ruta datos = do
     writeFile ruta datos  -- Escribe los nuevos datos en el archivo
     return ()  -- No hay valor de retorno, simplemente se ejecuta la acción de escritura
+
+
+--Funcion para saber existencia de bicileta a partir de un codigo 
+existeCodigo :: [Bicicleta] -> CodigoBicicleta -> Bool
+existeCodigo [] _ = False
+existeCodigo ((Bicicleta codigo _ _ _):bicisRestantes) targetNombre
+    | codigo == targetNombre = True
+    | otherwise = existeCodigo bicisRestantes targetNombre
+
+
+p = do 
+    let direccion = "../Data App/bicicletas.txt" --Direccion donde se almacena la base de datos de los parqueos
+    parqueos <- leerArchivoBicis direccion
+    if existeCodigo parqueos "B0045"
+        then putStrLn " a"
+        else putStrLn "b"
+
+separaElementos :: [[Char]] -> [Bicicleta]
+separaElementos lista = 
+    if lista == [] then 
+        []
+    else 
+        [crearBicicletatxt(separaPorComas((head lista), ""))] ++ separaElementos(tail lista)
+
+convierteALineas :: String -> [String]
+convierteALineas texto = lines texto
+
+leerArchivoBicis :: FilePath -> IO [Bicicleta]
+leerArchivoBicis archivo = do
+    contenido <- readFile archivo
+    let parqueos = separaElementos(convierteALineas contenido)
+    return parqueos
+
