@@ -105,7 +105,7 @@ mostrarDetalleFactura factura = do
 
 -- NOTA IMPORTANTE
 -- Esta funcionalidad requiere alquilar y parqueo, si bien una 
--- ya está, la otra presenta errores, hasta confirmar que alquilar esté bien
+-- ya está que es parqueo, la otra presenta errores (ya identificados), hasta confirmar que alquilar esté bien
 -- esto permanecerá comentado
 
 
@@ -118,7 +118,7 @@ mostrarDetalleFactura factura = do
 --    return []
 --crearNuevaFactura alquileres idFactura idAlquiler tarifaElectrica tarifaPedal parqueos = do
 --    let codAlquiler = getIdentificador (head alquileres)
-    
+
 --    if idAlquiler == codAlquiler then do
 --        let estado = getEstado (head alquileres)
 --        if estado == "facturado" then do
@@ -170,3 +170,56 @@ mostrarTodasLasFacturas (factura:facturas) = do
     mostrarDetalleFactura factura
     mostrarTodasLasFacturas facturas
 
+
+
+-- Muestra una sola factura al usuario
+-- Entrada: lista de facturas, código de la factura a mostrar, nombre de la empresa, sitio web de la empresa, contacto de la empresa
+-- Salida: N/A
+mostrarUnaFactura :: [Factura] -> Integer -> String -> String -> String -> IO ()
+mostrarUnaFactura [] _ _ _ _ = do
+    putStrLn "\nEl código que ingresó no se encuentra en el sistema.\n"
+    return ()
+mostrarUnaFactura (factura:facturas) codigo nombreEmpresa sitioWeb contacto
+    | getIdentificadorFactura factura == codigo = do
+        putStrLn "--------------------------------------"
+        putStrLn $ "Empresa: " ++ nombreEmpresa
+        putStrLn $ "Sitio Web: " ++ sitioWeb
+        putStrLn $ "Contacto: " ++ contacto
+        mostrarDetalleFactura factura
+    | otherwise = mostrarUnaFactura facturas codigo nombreEmpresa sitioWeb contacto
+
+
+-- Convierte una lista de cadenas de texto con información de facturas en una lista de facturas
+-- Entrada: una lista de cadenas de texto donde cada cadena representa la información de una factura
+-- Salida: una lista de facturas
+convertirCadenasAFacturas :: [[Char]] -> [Factura]
+convertirCadenasAFacturas = map
+      (\ cadena -> crearFactura (separaPorComas (cadena, "")))
+
+
+-- Lee el archivo de facturas
+-- Entrada: ruta del archivo
+-- Salida: retorna una lista de facturas
+leerArchivoFacturas :: FilePath -> IO [Factura]
+leerArchivoFacturas archivo = do
+    contenido <- readFile archivo
+    let facturas = convertirCadenasAFacturas (lines contenido)
+    return facturas
+
+
+-- Agrega una factura al archivo de facturas
+-- Entrada: la factura a agregar
+-- Salida: N/A
+guardarFacturaEnArchivo :: Factura -> IO ()
+guardarFacturaEnArchivo factura = do
+    let idFactura = getIdentificadorFactura factura
+    let puntoSalida = getPuntoSalida factura
+    let puntoDestino = getPuntoDestino factura
+    let cedulaUsuario = getCedulaUsuarioFactura factura
+    let codigoBicicleta = getCodigoBicicletaFactura factura
+    let tipoBicicleta = getTipoBicicletaFactura factura
+    let distanciaRecorrida = getDistanciaRecorrida factura
+    let tarifaPorKilometro = getTarifaPorKilometro factura
+    let montoTotal = getMontoTotalFactura factura
+    let facturaString = show idFactura ++ "," ++ puntoSalida ++ "," ++ puntoDestino ++ "," ++ show cedulaUsuario ++ "," ++ codigoBicicleta ++ "," ++ tipoBicicleta ++ "," ++ show distanciaRecorrida ++ "," ++ show tarifaPorKilometro ++ "," ++ show montoTotal ++ "\n"
+    appendFile "facturas.txt" facturaString
