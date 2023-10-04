@@ -1,0 +1,2 @@
+117900074,Parqueo G,Parqueo G,B001
+711203045,Parqueo A,Parqueo B,B002
