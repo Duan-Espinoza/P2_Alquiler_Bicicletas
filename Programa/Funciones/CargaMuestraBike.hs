@@ -2,7 +2,7 @@ module CargaMuestraBike where
 import FuncionesRelevantes
 import System.IO
 import qualified Control.Monad
-
+import System.Directory (removeFile) --para actualizacion 
 
 
 -- Estructura bicicletas
@@ -210,19 +210,21 @@ existeCodigo ((Bicicleta codigo _ _ _):bicisRestantes) targetNombre
     | otherwise = existeCodigo bicisRestantes targetNombre
 
 
-p = do 
-    let direccion = "../Data App/bicicletas.txt" --Direccion donde se almacena la base de datos de los parqueos
-    parqueos <- leerArchivoBicis direccion
-    if existeCodigo parqueos "B0045"
-        then putStrLn " a"
-        else putStrLn "b"
+separaPorComas5 :: ([Char], [Char]) -> [[Char]]
+separaPorComas5 (cadena,temp) = --split
+    if cadena == "" then[temp] else
+        if (head cadena) == (head ",") then 
+            [temp] ++ separaPorComas5((tail cadena), "")
+        else
+            separaPorComas5((tail cadena), temp++[(head cadena)])
+
 
 separaElementos :: [[Char]] -> [Bicicleta]
 separaElementos lista = 
     if lista == [] then 
         []
     else 
-        [crearBicicletatxt(separaPorComas((head lista), ""))] ++ separaElementos(tail lista)
+        [crearBicicletatxt(separaPorComas5((head lista), ""))] ++ separaElementos(tail lista)
 
 convierteALineas :: String -> [String]
 convierteALineas texto = lines texto
@@ -230,6 +232,11 @@ convierteALineas texto = lines texto
 leerArchivoBicis :: FilePath -> IO [Bicicleta]
 leerArchivoBicis archivo = do
     contenido <- readFile archivo
-    let parqueos = separaElementos(convierteALineas contenido)
-    return parqueos
+    let bicis = separaElementos(convierteALineas contenido)
+    return bicis
+
+
+-----------------
+
+
 

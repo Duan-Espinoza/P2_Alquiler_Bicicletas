@@ -8,6 +8,7 @@ import Control.Exception (try)
 import GHC.Read (readField)
 import CargaParqueos
 import LoadUsuarios
+import Alquilar 
 import CargaMuestraBike  -- Importa tu módulo principal aquí
 -- Seccion de vistas 
 vistaMenuInicial = do
@@ -44,7 +45,8 @@ menuGenerales = do
                 putStrLn "\nEn DESAROSLLO "
         else if op == 2 
             then do 
-                putStrLn "\nEn DESAROLSDLO "
+                -- ALQUILAR
+                Alquilar.alquila
         else if op == 3
             then do 
                 putStrLn "\nEn DESAROLLDO "
@@ -108,11 +110,6 @@ menuOperativas = do
                 menuOperativas
 
 
-prueba = do 
-    let baseDatosParqueos = "../Data App/infoParqueos.txt" --Datos almacenados
-    base <- leerArchivo baseDatosParqueos
-    print "es: "
-    print base
 --funcion encargada de permitir mostrar bicis en base a lo que diga el usuario
 muestraActionsBicis = do 
     putStrLn "\n\nIndique el nombre del parqueo donde desea hacer la consulta"

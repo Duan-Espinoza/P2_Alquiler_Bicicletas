@@ -1,10 +1,11 @@
+module Alquilar where
 import CargaParqueos
 import CargaMuestraBike
 import System.IO
 import System.Directory --Para Modificacion de archivos
 --Estructura de datos para un alquiler 
 type IdAlquiler = Integer
-type Cedula = Integer
+type Cedula = String
 type ParqueoSalida = String
 type ParqueoLlegada = String
 type Bici = String
@@ -16,7 +17,7 @@ data Alquiler = Alquiler IdAlquiler Cedula ParqueoSalida ParqueoLlegada Bici Est
 --S: Un nuevo alquiler
 --R: Debe seguir la estructura de datos de un alquiler
 creaAlquiler :: [String] -> Alquiler
-creaAlquiler elemento = Alquiler (read (elemento !! 0) :: Integer) (read (elemento !! 1) :: Integer) (elemento !! 2) (elemento !! 3)(elemento !! 4)(elemento !! 5) 
+creaAlquiler elemento = Alquiler (read (elemento !! 0) :: Integer) (elemento !! 1) (elemento !! 2) (elemento !! 3)(elemento !! 4)(elemento !! 5) 
 
 ----  Metodos Accesores
 getIdAlquiler :: Alquiler -> IdAlquiler
@@ -50,8 +51,10 @@ existeNombreParque ((Parqueo _ nombre _ _ _ _):parqueosRestantes) targetNombre
     | otherwise = existeNombreParque parqueosRestantes targetNombre
 
 
-
 -- Función para agregar un registro de alquiler a un archivo existente
+-- E: CEDULA, PARQUESALIDA, PARQUEOLLEGADA, BICI
+-- S: Archivo con los datos entrantes 
+-- R: datos entrantes deben respetar estructura de datos del alquiler
 creaArchivos :: Cedula -> ParqueoSalida -> ParqueoLlegada -> Bici -> IO ()
 creaArchivos cedula parqueoSalida parqueoLlegada bicicleta = do 
     let contenido = show cedula ++ ","
@@ -64,6 +67,9 @@ creaArchivos cedula parqueoSalida parqueoLlegada bicicleta = do
 
 
 -- Función para agregar un ID autoincrementable a cada fila de un archivo
+-- E: Ruta del archivo a implementar los id
+-- S: Archivo con id en primera fila 
+--R: archivo existente
 agregarIdsAutoincrementables :: FilePath -> IO ()
 agregarIdsAutoincrementables ruta = do
     -- Leer el contenido actual del archivo
@@ -71,7 +77,6 @@ agregarIdsAutoincrementables ruta = do
 
     -- Dividir el contenido en líneas
     let lineas = lines contenidoActual
-
     -- Crear un nuevo archivo con IDs autoincrementables
     let nuevoContenido = unlines [show (i + 1) ++ "," ++ linea | (i, linea) <- zip [0..] lineas]
 
@@ -85,7 +90,9 @@ agregarIdsAutoincrementables ruta = do
     -- Renombrar el archivo temporal al nombre original
     renameFile rutaTemporal ruta
 
----- Lectura 
+
+
+-------- Lectura 
 separaPorComasAlq :: ([Char], [Char]) -> [[Char]]
 separaPorComasAlq (cadena,temp) = --split
     if cadena == "" then[temp] else
@@ -120,8 +127,10 @@ alquila = do
         then do
             let baseDatos = "../Data App/infoParqueos.txt" --Datos almacenados
             parqueos <- leerArchivo baseDatos
-            let baseBicis = "../Data App/bicicletas.txt"
+            let baseBicis = "../Data App/bicicletas.txt" 
             baseBicis <- CargaMuestraBike.leerArchivoBicis baseBicis
+            let baseAlquileres = "../Data App/alquileres.txt" 
+
             putStrLn "\n\nIndique el nombre del parqueo de Salida: "
             salida <- getLine
             putStrLn "\n\nIndique el nombre del parqueo de Llegada: "
@@ -134,12 +143,21 @@ alquila = do
                     codigo <- getLine 
                     --validacion de existencia del codigo 
                     if CargaMuestraBike.existeCodigo baseBicis codigo
-                        then putStrLn"Existe el codigo"
-                        else putStrLn"No existe el codigo"
+                        then do
+                            creaArchivos cedula salida llegada codigo 
+                            agregarIdsAutoincrementables baseAlquileres
+                            putStrLn "Se realizo con exito el alquiler"
+                            -- Aqui funcion para poner el estado de la bici cen transito -- 
 
-                else putStrLn "Debe de indicar parqueos registrados en el sistema"
-            
-        else putStrLn "La cédula debe tener 9 dígitos."
+                        else do 
+                            putStrLn"\n\nNo existe el codigo de la bici"
+                            alquila
+                else do
+                    putStrLn "\n\n\nDebe de indicar parqueos registrados en el sistema"
+                    alquila
+        else do 
+            putStrLn "\n\n\nLa cédula debe tener 9 dígitos."
+            alquila
 
     
 

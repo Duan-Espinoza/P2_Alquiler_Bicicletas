@@ -15,7 +15,6 @@ realizarPruebas = do
                      , crearBicicleta "B005" "AE" "Parqueo5"
                      , crearBicicleta "B006" "AG" "Parqueo6"
                      , crearBicicleta "B007" "TR" "transito"
-                     , crearBicicleta "B007" "TR" "Parqueo7"
                      , crearBicicleta "B008" "AE" "Parqueo8"
                      , crearBicicleta "B009" "AG" "Parqueo9"
                      , crearBicicleta "B0010" "TR" "Parqueo10"
@@ -26,12 +25,14 @@ realizarPruebas = do
                      , crearBicicleta "B0015" "AG" "Parqueo15"
                      ]
     
- 
+    putStrLn "Mostrando todas las bicicletas:"
+    mostrarBicicletas bicicletas
 
     putStrLn "Mostrando bicicletas en Parqueo1:"
     mostrarBicicletasEnParqueo bicicletas "Parqueo7"
 
-    
+    putStrLn "Mostrando bicicletas en tránsito:"
+    mostrarBicicletasEnParqueo bicicletas "transito"
 
     putStrLn "Pruebas completadas."
 

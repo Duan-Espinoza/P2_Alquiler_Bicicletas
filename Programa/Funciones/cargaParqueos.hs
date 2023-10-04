@@ -18,14 +18,6 @@ type CordenadaY = Float
 
 data Parqueo = Parqueo IdParqueo NombreParqueo DireccionParqueo ProvinciaParqueo CordenadaX CordenadaY
 
-instance Show Parqueo where
-    show (Parqueo id nombre direccion provincia x y) =
-        "Id: " ++ show id ++
-        ", Nombre: " ++ nombre ++
-        ", Dirección: " ++ direccion ++
-        ", Provincia: " ++ provincia ++
-        ", Coordenada X: " ++ show x ++
-        ", Coordenada Y: " ++ show y
 
 -- Funcion que crea archivo con direccion 
 creaArchivo = do 
@@ -166,6 +158,7 @@ showParqueo parqueo =
     in
         "El id es: " ++ show id  ++ ", nombre del Parque: "++ nombre ++ ", su direccion es: " ++ direccion ++ ", provincia: " ++ provincia ++ ", coordenada X: "++ show cordenadaX ++ ", coordenada Y: " ++ show  cordenadaY
 
+showParqueos :: [Parqueo] -> IO ()
 showParqueos [] = print("")
 showParqueos lista = 
     do 
@@ -243,3 +236,5 @@ consultaNombreParqueo = do
     let direccion = "../Data App/infoParqueos.txt" --Direccion donde se almacena la base de datos de los parqueos
     parqueos <- leerArchivo direccion
     existeNombre parqueos  
+
+

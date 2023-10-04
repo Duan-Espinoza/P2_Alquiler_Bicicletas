@@ -1,2 +1,4 @@
-1,117900074,Parqueo G,Parqueo G,B001
-2,711203045,Parqueo A,Parqueo B,B002
+1,1,1,117900074,Parqueo G,Parqueo G,B001
+2,2,2,711203045,Parqueo A,Parqueo B,B002
+3,3,"119900074",Parqueo K,Parqueo H,B003
+4,"117900074",Parqueo E,Parqueo E,B006
