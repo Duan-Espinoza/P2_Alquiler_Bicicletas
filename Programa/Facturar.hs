@@ -99,3 +99,74 @@ mostrarDetalleFactura factura = do
     putStrLn $ "Tarifa por Kilómetro: " ++ show tarifaPorKilometro
     putStrLn $ "Monto Total de la Factura: " ++ show montoTotalFactura
     putStrLn "--------------------------------------"
+
+
+
+
+-- NOTA IMPORTANTE
+-- Esta funcionalidad requiere alquilar y parqueo, si bien una 
+-- ya está, la otra presenta errores, hasta confirmar que alquilar esté bien
+-- esto permanecerá comentado
+
+
+-- Crea una nueva factura y la agrega a la lista de facturas
+-- Entrada: lista de alquileres, ID de la factura, ID del alquiler a facturar, tarifa eléctrica, tarifa a pedal, lista de parqueos
+-- Salida: lista de facturas con la nueva factura ya agregada
+--crearNuevaFactura :: [Alquiler] -> Int -> Integer -> Float -> Float -> [Parqueo] -> IO [Factura]
+--crearNuevaFactura [] _ _ _ _ _ = do
+--    putStrLn "\nEl código de alquiler que ingresó no existe.\n"
+--    return []
+--crearNuevaFactura alquileres idFactura idAlquiler tarifaElectrica tarifaPedal parqueos = do
+--    let codAlquiler = getIdentificador (head alquileres)
+    
+--    if idAlquiler == codAlquiler then do
+--        let estado = getEstado (head alquileres)
+--        if estado == "facturado" then do
+--            putStrLn "\nEl código de alquiler que ingresó ya se encuentra facturado.\n"
+--            return []
+--        else do
+--            let tipoBici = getTipoBici (head alquileres)
+            -- Determinar la tarifa adecuada según el tipo de bicicleta
+--            let tarifa = if tipoBici == "AE" then tarifaElectrica else tarifaPedal
+--            return [crearNuevaFacturaAux (head alquileres) tarifa idFactura parqueos]
+--    else
+--        crearNuevaFactura (tail alquileres) idFactura idAlquiler tarifaElectrica tarifaPedal parqueos
+
+-- Crea la nueva factura
+-- Entrada: el alquiler a facturar, tarifa correspondiente al tipo de bicicleta, ID de la factura, lista de parqueos
+-- Salida: la factura nueva
+--crearNuevaFacturaAux :: Alquiler -> Float -> Int -> [Parqueo] -> Factura
+--crearNuevaFacturaAux alquiler tarifa idFactura parqueos = do
+--    let idAlquiler = getIdentificador alquiler
+--    let nombreParqueoLlegada = getParqueoLlegada alquiler
+--    let nombreParqueoSalida = getParqueoSalida alquiler
+--    let parqueoLlegada = getParqueo nombreParqueoLlegada parqueos
+--    let parqueoSalida = getParqueo nombreParqueoSalida parqueos
+--    let cedulaUsuario = getCedulaUsuario alquiler
+--    let codigoBicicleta = getCodigoBici alquiler
+--    let tipoBicicleta = getTipoBici alquiler
+--    let ubicacionXParqueoLlegada = getUbicacionX parqueoLlegada
+--    let ubicacionYParqueoLlegada = getUbicacionY parqueoLlegada
+--    let ubicacionXParqueoSalida = getUbicacionX parqueoSalida
+--    let ubicacionYParqueoSalida = getUbicacionY parqueoSalida
+--    let distanciaRecorrida = obtenerDistancia ubicacionXParqueoLlegada ubicacionYParqueoLlegada ubicacionXParqueoSalida ubicacionYParqueoSalida
+--    let montoTotal = tarifa * distanciaRecorrida
+--    crearFactura [show idAlquiler, nombreParqueoSalida, nombreParqueoLlegada, show cedulaUsuario, codigoBicicleta, tipoBicicleta, show distanciaRecorrida, show tarifa, show montoTotal]
+
+--  
+
+
+-- fin de la funcionalidad que requiere alquilar
+
+
+
+
+-- Muestra todas las facturas en la lista
+-- Entrada: una lista de facturas
+-- Salida: N/A
+mostrarTodasLasFacturas :: [Factura] -> IO ()
+mostrarTodasLasFacturas [] = return ()
+mostrarTodasLasFacturas (factura:facturas) = do
+    mostrarDetalleFactura factura
+    mostrarTodasLasFacturas facturas
+
