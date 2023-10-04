@@ -92,6 +92,6 @@ leerArchivoUsuarios archivo = do
 cargaUsuario :: IO ()
 cargaUsuario = do
     putStrLn "\n\nLeyendo usuarios desde el archivo usuarios.txt..."
-    usuarios <- leerArchivoUsuarios "usuarios.txt"
+    usuarios <- leerArchivoUsuarios "../Data App/usuarios.txt"
     putStrLn "Usuarios cargados:\n"
     mostrarAllUsuarios usuarios

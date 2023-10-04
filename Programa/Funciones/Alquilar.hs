@@ -66,10 +66,7 @@ creaArchivos cedula parqueoSalida parqueoLlegada bicicleta = do
 
 
 
--- Función para agregar un ID autoincrementable a cada fila de un archivo
--- E: Ruta del archivo a implementar los id
--- S: Archivo con id en primera fila 
---R: archivo existente
+-- Función para agregar un ID autoincrementable a cada fila de un archivo con 4 elementos separados por comas
 agregarIdsAutoincrementables :: FilePath -> IO ()
 agregarIdsAutoincrementables ruta = do
     -- Leer el contenido actual del archivo
@@ -77,8 +74,12 @@ agregarIdsAutoincrementables ruta = do
 
     -- Dividir el contenido en líneas
     let lineas = lines contenidoActual
-    -- Crear un nuevo archivo con IDs autoincrementables
-    let nuevoContenido = unlines [show (i + 1) ++ "," ++ linea | (i, linea) <- zip [0..] lineas]
+
+    -- Función para verificar si una línea tiene exactamente 4 elementos separados por comas
+    let tieneCuatroElementos linea = length (separaPorComasAlq (linea, "")) == 4
+
+    -- Crear un nuevo contenido con IDs autoincrementables solo para las líneas con 4 elementos
+    let nuevoContenido = unlines [if tieneCuatroElementos linea then show (i + 1) ++ "," ++ linea else linea | (i, linea) <- zip [0..] lineas]
 
     -- Escribir el nuevo contenido en un archivo temporal
     let rutaTemporal = ruta ++ ".temp"
@@ -89,8 +90,6 @@ agregarIdsAutoincrementables ruta = do
 
     -- Renombrar el archivo temporal al nombre original
     renameFile rutaTemporal ruta
-
-
 
 -------- Lectura 
 separaPorComasAlq :: ([Char], [Char]) -> [[Char]]
