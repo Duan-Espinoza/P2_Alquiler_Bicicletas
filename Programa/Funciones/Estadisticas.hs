@@ -1,4 +1,5 @@
-import CargaMuestraBike
+module Estadisticas where
+import CargaMuestraBike ()
 import Alquilar
 import Data.List
 import Data.Function (on)
@@ -15,8 +16,8 @@ top5BicicletasMasViajes alquileres =
     in take 5 (sortBy (flip compare `on` snd) contarViajesPorBicicleta)
 
 
-main :: IO ()
-main = do
+topBici :: IO ()
+topBici = do
     -- Cambia la ruta del archivo a la ubicación de tu archivo de datos
     let archivoAlquiler = "../Data App/alquileres.txt"
 
@@ -35,8 +36,8 @@ top5ParqueosMasViajes alquileres =
     let contarViajesPorParqueo = map (\parqueo -> (parqueo, length (filter (\a -> getParqueoSalida a == parqueo || getParqueoLlegada a == parqueo) alquileres))) (nub (map getParqueoSalida alquileres))
     in take 5 (sortBy (flip compare `on` snd) contarViajesPorParqueo)
 
-mains :: IO ()
-mains = do
+topParqueo :: IO ()
+topParqueo = do
     -- Cambia la ruta del archivo a la ubicación de tu archivo de datos
     let archivoAlquiler = "../Data App/alquileres.txt"
 
@@ -45,37 +46,7 @@ mains = do
 
     let top5 = top5ParqueosMasViajes alquileres
 
-    putStrLn "Top 5 de parqueos con más viajes (salida + destino):"
+    putStrLn "\n\nTop 5 de parqueos con más viajes (salida + destino):"
     mapM_ (\(parqueo, viajes) -> putStrLn $ "Parqueo " ++ parqueo ++ ": " ++ show viajes ++ " viajes") top5
 
 
-
-
--- Función para calcular la distancia total recorrida por un usuario (cedula)
-calcularDistanciaRecorridaPorUsuario :: String -> FilePath -> IO Float
-calcularDistanciaRecorridaPorUsuario cedula archivo = do
-    contenido <- readFile archivo
-    let lineas = lines contenido
-    let alquileres = map (Alquilar.creaAlquiler . separaPorComasAlq) lineas
-    let alquileresUsuario = filter (\alquiler -> getCedula alquiler == cedula) alquileres
-    let parqueosSalidaLlegada = [(getParqueoSalida alquiler, getParqueoLlegada alquiler) | alquiler <- alquileresUsuario]
-    distancias <- sequence [CargaParqueos.calcularDistanciaEntreParqueos salida llegada archivo | (salida, llegada) <- parqueosSalidaLlegada]
-    return (sum (map (\(Just d) -> d) distancias) / 1000.0)  -- Convertir a kilómetros
-
--- Función para obtener el top 3 de usuarios con más kilómetros recorridos
-top3UsuariosMasKilometros :: FilePath -> IO ()
-top3UsuariosMasKilometros archivo = do
-    contenido <- readFile archivo
-    let lineas = lines contenido
-    let alquileres = map (Alquilar.creaAlquiler . (\x -> (x, "")) . separaPorComasAlq) lineas
-    let cedulas = groupBy ((==) `on` getCedula) (sortOn getCedula alquileres)
-    let usuariosConDistancias = [(cedula, calcularDistanciaRecorridaPorUsuario cedula archivo) | cedula <- map (getCedula . head) cedulas]
-    usuariosConDistanciasOrdenados <- sequence usuariosConDistancias
-    let top3 = take 3 (sortOn (negate . snd) usuariosConDistanciasOrdenados)
-    putStrLn "Top 3 de usuarios con más kilómetros recorridos:"
-    mapM_ (\(cedula, distancia) -> putStrLn $ "Cedula: " ++ cedula ++ ", Kilómetros Recorridos: " ++ show distancia) top3
-
-mainf :: IO ()
-mainf = do
-    let archivo = "../App Data/alquileres.txt"  -- Cambiar a la ruta de tu archivo de alquileres
-    top3UsuariosMasKilometros archivo

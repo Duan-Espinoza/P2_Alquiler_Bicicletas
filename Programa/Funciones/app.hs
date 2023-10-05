@@ -10,6 +10,8 @@ import CargaParqueos
 import LoadUsuarios
 import Alquilar 
 import CargaMuestraBike  -- Importa tu módulo principal aquí
+import Estadisticas 
+import ConsultaBike
 -- Seccion de vistas 
 vistaMenuInicial = do
     putStrLn "\n\n \tBienvenido"
@@ -42,7 +44,14 @@ menuGenerales = do
     else
         if op == 1
             then do 
-                putStrLn "\nEn DESAROSLLO "
+                --CONSULTAR BICICLETA
+                putStrLn "\n\nIndique la ubicacion del archivo de Parqueos:"
+                ruta <- getLine
+                ConsultaBike.mainConsulta ruta
+                putStrLn "\n\n"
+                menuGenerales
+
+                
         else if op == 2 
             then do 
                 -- ALQUILAR
@@ -71,34 +80,57 @@ menuOperativas = do
         menuOperativas
     else
         if op == 1 
-            then  
+            then  do
                 -- CARGA Y MUESTRA DE PARQUEOS
                 CargaParqueos.consultaRuta
+                menuOperativas 
         else if op == 2
             then do 
-                -- MOSTRAR Y ASIGNAR PARQUEOS
+                -- MOSTRAR Y ASIGNAR BICIS
                 putStrLn "\n\nBienvenido al programa de prueba de CargaMuestraBike."
-                putStrLn "Presiona '1' Asignar Parqueos."
-                putStrLn "Presiona '2' Mostrar Parqueos."
-                putStrLn "Presiona '3' Volver."
-
+                putStrLn "Indique la ruta para Carga Bicicletas" -- Falta validacion para que sea existente
+                baseDatosBicis <- getLine
+                putStrLn "\n\nSe cargo con exito. Desea Hacer consulta?"
+                putStrLn "1.Si"
+                putStrLn "1.No"
                 opcion <- getLine
                 case opcion of
-                    "1" -> putStrLn "Saliendo del programa."
-                    "2" -> muestraActionsBicis
+                    "1" -> do 
+                        muestraActionsBicis baseDatosBicis
+                        putStrLn "\n\n"
+                        menuOperativas
+                    "2" -> menuOperativas
                     _   -> menuOperativas
-
+                     
         else if op == 3
             then do 
                 -- CARGA USUARIO
                 putStrLn "\n Indique la ruta para cargar los usuarios"
                 ruta <- getLine
                 LoadUsuarios.cargaUsuario
+                putStrLn "\n\n"
+                menuOperativas
 
         else if op == 4
             then do 
                 -- ESTADISTICAS
-                putStrLn "\nEn DESAROLLDO "
+                putStrLn "\n\nBienvenido a Estadisticas"
+                putStrLn "1.Top 5 Bicicletas con mas viajes ."
+                putStrLn "2.Top 5 Parqueos con mas viajes."
+                putStrLn "3.Resumen"
+                putStrLn "4.Volver"
+                putStrLn "Seleccione una de las opciones mostradas"
+                opcion <- getLine
+                case opcion of
+                    "1" -> do 
+                        Estadisticas.topParqueo
+                        putStrLn "\n\n"
+                        menuOperativas
+                    "2" -> do
+                        Estadisticas.topBici
+                        putStrLn "\n\n"
+                        menuOperativas
+                    _   -> menuOperativas
         else if op == 5
             then do 
                 -- VOLVER
@@ -110,13 +142,19 @@ menuOperativas = do
                 menuOperativas
 
 
+-- Funcion valida asignacion de parqueos
+asignaParqueo ruta= do 
+    let baseNew = leerArchivoBicicletas ruta
+    putStrLn "\n\nSe Cargo con exito a la base de datos" 
+
+
 --funcion encargada de permitir mostrar bicis en base a lo que diga el usuario
-muestraActionsBicis = do 
+muestraActionsBicis baseDatosBicis = do 
     putStrLn "\n\nIndique el nombre del parqueo donde desea hacer la consulta"
     parqueoSolicitud <- getLine 
 
     let baseDatosParqueos = "../Data App/infoParqueos.txt" --Datos almacenados
-    let baseDatosBicis = "../Data App/bicicletas.txt"
+    --let baseDatosBicis = "../Data App/bicicletas.txt"
 
     baseParqueos <- CargaParqueos.leerArchivo baseDatosParqueos
     baseBicis <- CargaMuestraBike.leerArchivoBicis baseDatosBicis

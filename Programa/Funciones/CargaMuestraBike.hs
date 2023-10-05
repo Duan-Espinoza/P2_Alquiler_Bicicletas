@@ -239,4 +239,40 @@ leerArchivoBicis archivo = do
 -----------------
 
 
+mainrs :: IO ()
+mainrs = do
+    let codigoAbuscar = "B001"
+    actualizarLugarPorCodigo codigoAbuscar "../Data App/bicicletas.txt"
+    putStrLn "Operación completada."
 
+actualizarLugarPorCodigo :: CodigoBicicleta -> FilePath -> IO ()
+actualizarLugarPorCodigo codigoAbuscar archivo = do
+    handle <- openFile archivo ReadWriteMode
+    contenido <- hGetContents handle
+    let nuevasLineas = actualizarLineas codigoAbuscar (lines contenido)
+        nuevoContenido = unlines nuevasLineas
+    hSeek handle AbsoluteSeek 0
+    hPutStr handle nuevoContenido
+    hClose handle  -- Cerrar el archivo al final
+
+
+actualizarLineas :: CodigoBicicleta -> [String] -> [String]
+actualizarLineas _ [] = []
+actualizarLineas codigoAbuscar (linea:resto) =
+    let elementos = separaPorComas5 (linea, "")
+        codigo = head elementos
+        lugar = elementos !! 2
+        nuevaLinea = if codigo == codigoAbuscar
+                     then codigo ++ "," ++ "TR" ++ "," ++ "transito"
+                     else linea
+    in nuevaLinea : actualizarLineas codigoAbuscar resto
+
+
+-- Filtra las bicicletas que están ubicadas en un parqueo específico
+-- Entrada: una lista de bicicletas, nombre del parqueo
+-- Salida: una lista de bicicletas ubicadas en el parqueo especificado
+obtenerBicicletasPorParqueo :: [Bicicleta] -> String -> [Bicicleta]
+obtenerBicicletasPorParqueo [] _ = []  -- Cuando la lista de bicicletas está vacía, no hay bicicletas para filtrar
+obtenerBicicletasPorParqueo (bicicleta:restoBicicletas) nombreParqueo
+    | getUbicacion bicicleta == nombreParqueo = bicicleta : obtenerBicicletasPorParqueo restoBicicletas nombreParqueo
+    | otherwise = obtenerBicicletasPorParqueo restoBicicletas nombreParqueo
