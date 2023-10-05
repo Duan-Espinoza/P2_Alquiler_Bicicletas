@@ -59,6 +59,7 @@ menuGenerales = do
                 -- ALQUILAR
                 Alquilar.alquila
                 putStrLn "\n\n"
+                vistaGenerales
                 menuGenerales
         else if op == 3
             then do 
@@ -72,6 +73,7 @@ menuGenerales = do
                 opcion <- getLine
                 case opcion of
                     "1" -> do 
+                        putStrLn "\n\n"
                         Facturar.mostrarTodasLasFacturas facturas
                         putStrLn "\n\n"
                         vistaGenerales
@@ -79,6 +81,7 @@ menuGenerales = do
                     "2" -> do
                         putStrLn "Para Mostrar una Factura indique elo identificador de factura: "
                         idFactura <- readLn
+                        putStrLn "\n\n"
                         Facturar.mostrarFacturaPorID facturas idFactura
                         putStrLn "\n\n"
                         vistaGenerales
