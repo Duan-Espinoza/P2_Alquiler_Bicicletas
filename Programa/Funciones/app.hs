@@ -48,8 +48,10 @@ menuGenerales = do
                 --CONSULTAR BICICLETA
                 putStrLn "\n\nIndique la ubicacion del archivo de Parqueos:"
                 ruta <- getLine
+                putStrLn "\n\nNOTA: coloque la siguiente informacion una por una"
                 ConsultaBike.mainConsulta ruta
                 putStrLn "\n\n"
+                vistaGenerales
                 menuGenerales
             
         else if op == 2 
@@ -64,21 +66,26 @@ menuGenerales = do
                 putStrLn "\n\nBienvenido a Facturar"
                 putStrLn "1.Mostrar Todas facturas"
                 putStrLn "2.Mostrar facturas por ID"
+                putStrLn "3.Volver"
                 putStrLn "Seleccione una opcion: "
-                facturas <- leerArchivoFacturas "facturas.txt"
+                facturas <- leerArchivoFacturas "../Data App/facturas.txt"
                 opcion <- getLine
                 case opcion of
                     "1" -> do 
                         Facturar.mostrarTodasLasFacturas facturas
                         putStrLn "\n\n"
+                        vistaGenerales
                         menuGenerales
                     "2" -> do
                         putStrLn "Para Mostrar una Factura indique elo identificador de factura: "
                         idFactura <- readLn
                         Facturar.mostrarFacturaPorID facturas idFactura
                         putStrLn "\n\n"
+                        vistaGenerales
                         menuGenerales
-                    _   -> menuGenerales 
+                    _   -> do 
+                        vistaGenerales
+                        menuGenerales 
                 
         else if op == 4
             then do 
@@ -105,6 +112,7 @@ menuOperativas = do
             then  do
                 -- CARGA Y MUESTRA DE PARQUEOS
                 CargaParqueos.consultaRuta
+                vistaOperativas
                 menuOperativas 
         else if op == 2
             then do 
@@ -114,15 +122,20 @@ menuOperativas = do
                 baseDatosBicis <- getLine
                 putStrLn "\n\nSe cargo con exito. Desea Hacer consulta?"
                 putStrLn "1.Si"
-                putStrLn "1.No"
+                putStrLn "2.No"
                 opcion <- getLine
                 case opcion of
                     "1" -> do 
                         muestraActionsBicis baseDatosBicis
                         putStrLn "\n\n"
+                        vistaOperativas
                         menuOperativas
-                    "2" -> menuOperativas
-                    _   -> menuOperativas
+                    "2" -> do
+                        vistaOperativas
+                        menuOperativas
+                    _   -> do
+                        vistaOperativas
+                        menuOperativas
                      
         else if op == 3
             then do 
@@ -131,6 +144,7 @@ menuOperativas = do
                 ruta <- getLine
                 LoadUsuarios.cargaUsuario
                 putStrLn "\n\n"
+                vistaOperativas
                 menuOperativas
 
         else if op == 4
@@ -146,12 +160,16 @@ menuOperativas = do
                     "1" -> do 
                         Estadisticas.topParqueo
                         putStrLn "\n\n"
+                        vistaOperativas
                         menuOperativas
                     "2" -> do
                         Estadisticas.topBici
                         putStrLn "\n\n"
+                        vistaOperativas
                         menuOperativas
-                    _   -> menuOperativas
+                    _   -> do
+                        vistaOperativas
+                        menuOperativas
         else if op == 5
             then do 
                 -- VOLVER

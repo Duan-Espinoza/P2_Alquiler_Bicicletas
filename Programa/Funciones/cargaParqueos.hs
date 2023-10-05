@@ -16,15 +16,8 @@ type DireccionParqueo = String
 type ProvinciaParqueo = String
 type CordenadaX = Float
 type CordenadaY = Float
-
 data Parqueo = Parqueo IdParqueo NombreParqueo DireccionParqueo ProvinciaParqueo CordenadaX CordenadaY
 
-
--- Funcion que crea archivo con direccion 
-creaArchivo = do 
-    let ruta = "../Data App/infoParqueos"
-    let contenido = "Hola"
-    writeFile ruta contenido
 
 -- Consulta la ruta del archivo 
 -- E: Una ruta
@@ -35,7 +28,6 @@ consultaRuta = do
     putStrLn "\n\n Indique la ruta del archivo a cargar: "
     ruta <- getLine
     validoID <- verificarIDsUnicos ruta --Verificacion del id 
-
     if null ruta || ruta == "" then do   
         putStrLn "\n\n ---- Debe colocar una dirección válida ----"
         consultaRuta
@@ -65,6 +57,7 @@ consultaRuta = do
                 
             else do
                 putStrLn ("La ruta " ++ ruta ++ " no existe.")
+
 
 
 -------- Validaciones de datos del archivo 
