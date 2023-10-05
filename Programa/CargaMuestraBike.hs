@@ -196,3 +196,15 @@ escribirNuevosDatos :: String -> String -> IO ()
 escribirNuevosDatos ruta datos = do
     writeFile ruta datos  -- Escribe los nuevos datos en el archivo
     return ()  -- No hay valor de retorno, simplemente se ejecuta la acción de escritura
+
+
+
+
+-- Filtra las bicicletas que están ubicadas en un parqueo específico
+-- Entrada: una lista de bicicletas, nombre del parqueo
+-- Salida: una lista de bicicletas ubicadas en el parqueo especificado
+obtenerBicicletasPorParqueo :: [Bicicleta] -> String -> [Bicicleta]
+obtenerBicicletasPorParqueo [] _ = []  -- Cuando la lista de bicicletas está vacía, no hay bicicletas para filtrar
+obtenerBicicletasPorParqueo (bicicleta:restoBicicletas) nombreParqueo
+    | getUbicacion bicicleta == nombreParqueo = bicicleta : obtenerBicicletasPorParqueo restoBicicletas nombreParqueo
+    | otherwise = obtenerBicicletasPorParqueo restoBicicletas nombreParqueo

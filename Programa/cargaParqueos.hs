@@ -6,6 +6,7 @@ import qualified Data.Set as Set
 import Data.List (elem)
 import Control.Exception (try)
 
+
 --------------- Datos parqueo 
 
 -- Definición de tipos de datos
@@ -238,3 +239,63 @@ consultaNombreParqueo = do
     existeNombre parqueos  
 
 
+-----------------
+
+-- Función para buscar la coordenada X y Y por nombre de parqueo
+buscarCordenadaXYPorNombre :: String -> FilePath -> IO (Maybe (CordenadaX, CordenadaY))
+buscarCordenadaXYPorNombre nombre archivo = do
+    contenido <- readFile archivo
+    let lineas = lines contenido
+    let parqueos = separaElementos lineas
+    let resultado = buscarCordenadaXY nombre parqueos
+    return resultado
+
+buscarCordenadaXY :: String -> [Parqueo] -> Maybe (CordenadaX, CordenadaY)
+buscarCordenadaXY _ [] = Nothing  -- Si la lista de parqueos está vacía, no se encontró el parqueo
+buscarCordenadaXY nombre ((Parqueo _ nombreParqueo _ _ cordenadaX cordenadaY):resto) =
+    if nombre == nombreParqueo
+        then Just (cordenadaX, cordenadaY)  -- Se encontró el parqueo con el nombre buscado, se devuelve la coordenada X y Y
+        else buscarCordenadaXY nombre resto  -- Continuar buscando en el resto de la lista
+
+mainn :: IO ()
+mainn = do
+    let nombreBuscado = "Parqueo A"  -- Cambiar a nombre del parqueo que desees buscar
+    let archivo = "../Data App/infoParqueos.txt"  -- Cambiar a la ruta de tu archivo de texto
+    resultado <- buscarCordenadaXYPorNombre nombreBuscado archivo
+    case resultado of
+        Just (cordenadaX, cordenadaY) -> putStrLn $ "Las coordenadas de " ++ nombreBuscado ++ " son: (" ++ show cordenadaX ++ ", " ++ show cordenadaY ++ ")"
+        Nothing -> putStrLn $ "No se encontró el parqueo con nombre: " ++ nombreBuscado
+
+
+
+-- Función para calcular la distancia entre dos parqueos por nombre
+calcularDistanciaEntreParqueos :: String -> String -> FilePath -> IO (Maybe Float)
+calcularDistanciaEntreParqueos nombreParqueo1 nombreParqueo2 archivo = do
+    coordenadasParqueo1 <- buscarCordenadaXYPorNombre nombreParqueo1 archivo
+    coordenadasParqueo2 <- buscarCordenadaXYPorNombre nombreParqueo2 archivo
+
+    case (coordenadasParqueo1, coordenadasParqueo2) of
+        (Just (x1, y1), Just (x2, y2)) -> do
+            let distancia = obtenerDistancia x1 y1 x2 y2
+            return (Just distancia)
+        _ -> return Nothing  -- Uno o ambos parqueos no fueron encontrados
+
+maint :: IO ()
+maint = do
+    let archivo = "../Data App/infoParqueos.txt"  -- Cambiar a la ruta de tu archivo de parqueos
+    let nombreParqueo1 = "Parqueo A"  -- Cambiar al nombre del primer parqueo
+    let nombreParqueo2 = "Parqueo B"  -- Cambiar al nombre del segundo parqueo
+    distancia <- calcularDistanciaEntreParqueos nombreParqueo1 nombreParqueo2 archivo
+
+    case distancia of
+        Just d -> putStrLn $ "La distancia entre " ++ nombreParqueo1 ++ " y " ++ nombreParqueo2 ++ " es: " ++ show d
+        Nothing -> putStrLn "No se pudo calcular la distancia."
+
+
+
+--Obtiene la distancia entre dos puntos
+--E: recibe los puntos x y y de ambos lugares
+--S: retorna la distancia entre los dos lugares
+obtenerDistancia :: Float -> Float -> Float -> Float -> Float
+obtenerDistancia x1 y1 x2 y2 =
+    sqrt ((x1-x2)**2 + (y1-y2)**2)
