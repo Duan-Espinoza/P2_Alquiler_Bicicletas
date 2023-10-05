@@ -1,0 +1,15 @@
+1,Parqueo A,Direccion 1,LI,12.34,56.78
+2,Parqueo F,Direccion 2,LI,23.45,67.89
+3,Parqueo C,Direccion 3,LI,34.56,78.90
+4,Parqueo D,Direccion 4,LI,45.67,89.01
+5,Parqueo E,Direccion 5,LI,56.78,90.12
+6,Parqueo B,Direccion 6,LI,67.89,01.23
+7,Parqueo G,Direccion 7,LI,78.90,12.34
+8,Parqueo H,Direccion 8,LI,89.01,23.45
+9,Parqueo I,Direccion 9,LI,90.12,34.56
+10,Parqueo J,Direccion 10,LI,01.23,45.67
+11,Parqueo K,Direccion 11,LI,12.34,56.78
+12,Parqueo L,Direccion 12,LI,23.45,67.89
+13,Parqueo M,Direccion 13,LI,34.56,78.90
+14,Parqueo N,Direccion 14,LI,45.67,89.01
+15,Parqueo O,Direccion 15,LI,56.78,90.12
