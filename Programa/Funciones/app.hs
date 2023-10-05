@@ -12,6 +12,7 @@ import Alquilar
 import CargaMuestraBike  -- Importa tu módulo principal aquí
 import Estadisticas 
 import ConsultaBike
+import Facturar 
 -- Seccion de vistas 
 vistaMenuInicial = do
     putStrLn "\n\n \tBienvenido"
@@ -50,17 +51,38 @@ menuGenerales = do
                 ConsultaBike.mainConsulta ruta
                 putStrLn "\n\n"
                 menuGenerales
-
-                
+            
         else if op == 2 
             then do 
                 -- ALQUILAR
                 Alquilar.alquila
+                putStrLn "\n\n"
+                menuGenerales
         else if op == 3
             then do 
-                putStrLn "\nEn DESAROLLDO "
+                --FACTURAR
+                putStrLn "\n\nBienvenido a Facturar"
+                putStrLn "1.Mostrar Todas facturas"
+                putStrLn "2.Mostrar facturas por ID"
+                putStrLn "Seleccione una opcion: "
+                facturas <- leerArchivoFacturas "facturas.txt"
+                opcion <- getLine
+                case opcion of
+                    "1" -> do 
+                        Facturar.mostrarTodasLasFacturas facturas
+                        putStrLn "\n\n"
+                        menuGenerales
+                    "2" -> do
+                        putStrLn "Para Mostrar una Factura indique elo identificador de factura: "
+                        idFactura <- readLn
+                        Facturar.mostrarFacturaPorID facturas idFactura
+                        putStrLn "\n\n"
+                        menuGenerales
+                    _   -> menuGenerales 
+                
         else if op == 4
             then do 
+                --VOLVER
                 main
         else 
             do
@@ -117,7 +139,6 @@ menuOperativas = do
                 putStrLn "\n\nBienvenido a Estadisticas"
                 putStrLn "1.Top 5 Bicicletas con mas viajes ."
                 putStrLn "2.Top 5 Parqueos con mas viajes."
-                putStrLn "3.Resumen"
                 putStrLn "4.Volver"
                 putStrLn "Seleccione una de las opciones mostradas"
                 opcion <- getLine
